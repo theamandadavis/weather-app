@@ -62,11 +62,13 @@ func GetWeatherData(latitude, longitude float64) (*WeatherResponse, error) {
 
 	office := strings.Split(weatherData.Props.ForecastOffice, "/")
 
+	//Call GetForecast to get the short forecast and detailed forecast for temp characterization
 	details, err := GetForecast(office[len(office)-1], weatherData.Props.GridX, weatherData.Props.GridY)
 	if err != nil {
 		log.Fatalf("Error getting forecast: %v", err)
 	}
 
+	//Call GetForecastDetails to parse the forecast details
 	forecastFinal, err := GetForecastDetails(details)
 	if err != nil {
 		log.Fatalf("Error getting forecast details: %v", err)
@@ -170,3 +172,7 @@ func GetForecastDetails(forecastData *ForecastResponse) (*GetShortForecastRespon
 		TempCharacter: "N/A",
 	}, nil
 }
+
+// If I had more time, I would implement error handling for various edge cases, such as invalid coordinates, API rate limiting, and network issues.
+// Additionally, I would write unit tests for each function to ensure reliability and correctness.
+// Finally, I would consider implementing caching mechanisms to reduce redundant API calls for frequently requested locations.
