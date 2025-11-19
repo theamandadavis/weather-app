@@ -100,7 +100,7 @@ func GetForecast(input ForecastInput) (*ForecastResponse, error) {
 	client := &http.Client{}
 
 	// Create a new GET request to a URL that reflects headers.
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.weather.gov/offices/%s/grids/%d,%d/forecast", input.Office, input.GridX, input.GridY), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.weather.gov/gridpoints/%s/%d,%d/forecast", input.Office, input.GridX, input.GridY), nil)
 	if err != nil {
 		log.Fatalf("Error creating request: %v", err)
 	}
@@ -124,6 +124,7 @@ func GetForecast(input ForecastInput) (*ForecastResponse, error) {
 	if err != nil {
 		log.Fatalf("Error marshalling response body: %v", err)
 	}
+
 	return &forecast, nil
 }
 
