@@ -21,7 +21,20 @@ type Weather struct {
 	Props Props `json:"properties"`
 }
 
-func GetWeather(latitude, longitude float64) (string, error) {
+type WeatherProperties struct {
+	Periods []Periods `json:"periods"`
+}
+
+type Periods struct {
+	Name             string `json:"name"`
+	ShortForecast    string `json:"shortForecast"`
+	DetailedForecast string `json:"detailedForecast"`
+}
+type WeatherResponse struct {
+	WeatherProps WeatherProperties `json:"properties"`
+}
+
+func GetWeather(latitude, longitude float64) (*WeatherResponse, error) {
 	var err error
 	var weather Weather
 	// Create a new HTTP client.
@@ -68,12 +81,17 @@ func GetWeather(latitude, longitude float64) (string, error) {
 		log.Fatalf("Error formatting forecast response: %v", err)
 	}
 
-	result, err := json.Marshal(formattedForecast)
-	if err != nil {
-		log.Fatalf("Error marshalling final response: %v", err)
-	}
-
-	return string(result), nil
+	return &WeatherResponse{
+		WeatherProps: WeatherProperties{
+			Periods: []Periods{
+				{
+					Name:             formattedForecast.Name,
+					ShortForecast:    formattedForecast.ShortForecast,
+					DetailedForecast: fmt.Sprintf("Temperature is characterized as %s", formattedForecast.TempCharacter),
+				},
+			},
+		},
+	}, nil
 }
 
 type ForecastInput struct {
@@ -151,7 +169,7 @@ type FormattedForecastResponse struct {
 func FormatForecastResponse(input FormatForecastInput) (*FormattedForecastResponse, error) {
 	if len(input.ForecastData.Props.Periods) > 0 {
 		tempStr := strings.Split(input.ForecastData.Props.Periods[0].DetailedForecast, " ")
-		temp, err := strconv.Atoi(tempStr[len(tempStr)-2])
+		temp, err := strconv.Atoi(tempStr[len(tempStr)-1])
 		if err != nil {
 			log.Fatalf("Error converting temperature to int: %v", err)
 		}

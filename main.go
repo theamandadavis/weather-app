@@ -14,7 +14,7 @@ import "weather-app/client"
 // •         The Coding Project should be written in the language for the job you’re applying for. (golang)
 
 func main() {
-	var resp string
+	var resp *client.WeatherResponse
 	var err error
 	// if resp, err = client.GetWeatherData(39.7456, -97.0892); err != nil {
 	// 	panic(err)
@@ -23,9 +23,10 @@ func main() {
 	if resp, err = client.GetWeather(39.7456, -97.0892); err != nil {
 		panic(err)
 	}
-	// println("Name: " + resp.Name)
-	// println("Short Forecast: " + resp.ShortForecast)
-	// println("Temperature Characterization: " + resp.TempCharacter)
-	println(resp)
+
+	println("Name: " + resp.WeatherProps.Periods[0].Name)
+	println("Short Forecast: " + resp.WeatherProps.Periods[0].ShortForecast)
+	println("Detailed Forecast: " + resp.WeatherProps.Periods[0].DetailedForecast)
+	println("-----")
 
 }
